@@ -1,0 +1,631 @@
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CockSeed - Partage ta taille en toute discrétion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2a2a2a;
+            --accent: #ff006e;
+            --accent-secondary: #8338ec;
+            --text: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border: #333;
+            --success: #00f5ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px var(--accent); }
+            to { text-shadow: 0 0 30px var(--accent), 0 0 40px var(--accent-secondary); }
+        }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            opacity: 0.8;
+        }
+
+        .mode-toggle {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .mode-btn {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .mode-btn.active::before,
+        .mode-btn:hover::before {
+            left: 0;
+        }
+
+        .mode-btn.active {
+            border-color: transparent;
+            color: var(--text);
+        }
+
+        .mode-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .mode-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(26, 26, 26, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(255, 0, 110, 0.2);
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(255, 0, 110, 0.3);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
+            border: none;
+            border-radius: 50px;
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 0, 110, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 15px;
+            text-align: center;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result.hidden {
+            display: none;
+        }
+
+        .seed-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--border);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 25px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--border);
+            transform: translateY(-1px);
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            min-height: 200px;
+        }
+
+        .image-container img {
+            max-width: 300px;
+            max-height: 200px;
+            object-fit: contain;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 110, 0.5));
+            border-radius: 10px;
+        }
+
+        .measurements {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            gap: 2rem;
+        }
+
+        .measure-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            flex: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .measure-item:hover {
+            transform: scale(1.05);
+        }
+
+        .measure-item .label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .measure-item .value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer p {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        footer p:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+
+            .measurements {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .image-container img {
+                max-width: 250px;
+                max-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">
+                <span class="logo-gradient">CockSeed</span>
+                <span class="tagline">crypt & share</span>
+            </h1>
+            <div class="mode-toggle">
+                <button class="mode-btn active" data-mode="create">Créer</button>
+                <button class="mode-btn" data-mode="view">Visualiser</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Mode Création -->
+            <section id="create-mode" class="mode-section active">
+                <div class="card">
+                    <h2>Créer ta CockSeed</h2>
+                    <p class="subtitle">Crypte discrètement la taille de ton anatomie</p>
+                    
+                    <div class="input-group">
+                        <label for="length">Longueur (cm)</label>
+                        <input type="number" id="length" placeholder="14.5" step="0.1" min="0" max="50">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="width">Largeur (cm)</label>
+                        <input type="number" id="width" placeholder="4.2" step="0.1" min="0" max="15">
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateSeed()">
+                        <span>Générer ma CockSeed</span>
+                        <div class="ripple"></div>
+                    </button>
+                    
+                    <div id="seed-result" class="result hidden">
+                        <h3>Ta CockSeed est prête !</h3>
+                        <div class="seed-display" id="seed-display"></div>
+                        <button class="copy-btn" onclick="copySeed()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" fill="currentColor"/>
+                            </svg>
+                            Copier
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3>Comment ça marche ?</h3>
+                    <p>Tes mesures sont cryptées en une seed unique. Partage cette seed avec qui tu veux, ils pourront visualiser sans savoir que c'est toi.</p>
+                </div>
+            </section>
+
+            <!-- Mode Visualisation -->
+            <section id="view-mode" class="mode-section">
+                <div class="card">
+                    <h2>Visualiser une CockSeed</h2>
+                    <p class="subtitle">Décrypte une seed et découvre les mensurations</p>
+                    
+                    <div class="input-group">
+                        <label for="seed-input">CockSeed</label>
+                        <input type="text" id="seed-input" placeholder="ex: CS-7A9B3F..." maxlength="16">
+                    </div>
+                    
+                    <button class="generate-btn" onclick="decodeSeed()">
+                        <span>Décoder</span>
+                        <div class="ripple"></div>
+                    </button>
+                    
+                    <div id="decode-result" class="result hidden">
+                        <h3>Mensurations décodées</h3>
+                        <div class="image-container">
+                            <img id="measurement-image" src="image.png" alt="Visualisation" style="display: none;">
+                        </div>
+                        <div class="measurements">
+                            <div class="measure-item">
+                                <span class="label">Longueur</span>
+                                <span class="value" id="decoded-length"></span>
+                            </div>
+                            <div class="measure-item">
+                                <span class="label">Largeur</span>
+                                <span class="value" id="decoded-width"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ for discreet sharing • CockSeed v1.0</p>
+        </footer>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Mode toggle
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const mode = btn.dataset.mode;
+                
+                // Update active button
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update active section
+                document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+                document.getElementById(`${mode}-mode`).classList.add('active');
+            });
+        });
+
+        // Simple encryption/decryption system
+        const generateRandomSeed = () => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let seed = 'CS-';
+            for (let i = 0; i < 8; i++) {
+                seed += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return seed;
+        };
+
+        // Create a simple encryption system
+        const encodeData = (length, width) => {
+            const data = { l: length, w: width };
+            const encoded = btoa(JSON.stringify(data));
+            return encoded;
+        };
+
+        const decodeData = (encoded) => {
+            try {
+                return JSON.parse(atob(encoded));
+            } catch (e) {
+                return null;
+            }
+        };
+
+        // Generate seed and store data
+        function generateSeed() {
+            const length = parseFloat(document.getElementById('length').value);
+            const width = parseFloat(document.getElementById('width').value);
+            
+            if (!length || !width || length <= 0 || width <= 0) {
+                showNotification('Veuillez entrer des valeurs valides');
+                return;
+            }
+            
+            const seed = generateRandomSeed();
+            const encodedData = encodeData(length, width);
+            
+            // Store data in localStorage with the seed as key
+            localStorage.setItem(seed, encodedData);
+            
+            document.getElementById('seed-display').textContent = seed;
+            document.getElementById('seed-result').classList.remove('hidden');
+        }
+
+        // Decode seed and display data
+        function decodeSeed() {
+            const seed = document.getElementById('seed-input').value.trim();
+            
+            if (!seed || !seed.startsWith('CS-')) {
+                showNotification('CockSeed invalide');
+                return;
+            }
+            
+            const encodedData = localStorage.getItem(seed);
+            if (!encodedData) {
+                showNotification('CockSeed non trouvée');
+                return;
+            }
+            
+            const data = decodeData(encodedData);
+            if (!data) {
+                showNotification('Erreur lors du décodage');
+                return;
+            }
+            
+            document.getElementById('decoded-length').textContent = `${data.l} cm`;
+            document.getElementById('decoded-width').textContent = `${data.w} cm`;
+            
+            const img = document.getElementById('measurement-image');
+            
+            // Apply exact dimensions to image (no ratio preservation)
+            img.style.width = `${data.w * 20}px`; // Scale factor for visibility
+            img.style.height = `${data.l * 20}px`; // Scale factor for visibility
+            img.style.objectFit = 'fill'; // Force stretch to exact dimensions
+            img.style.display = 'block';
+            
+            document.getElementById('decode-result').classList.remove('hidden');
+        }
+
+        // Copy seed function
+        function copySeed() {
+            const seed = document.getElementById('seed-display').textContent;
+            navigator.clipboard.writeText(seed).then(() => {
+                showNotification('CockSeed copiée !');
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = seed;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('CockSeed copiée !');
+            });
+        }
+
+        // Show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.generate-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const ripple = btn.querySelector('.ripple');
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (ripple) {
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.style.animation = 'none';
+                    setTimeout(() => {
+                        ripple.style.animation = 'ripple 0.6s ease-out';
+                    }, 10);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
